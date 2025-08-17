@@ -28,7 +28,10 @@ const Navbar = ({ isMenuOpen, setIsMenuOpen }) => {
                         {/* Logo */}
                         <a href="#" className="flex items-center gap-2">
                             <img src={logo} alt="Glow Logo" className="w-8 h-8" />
-                            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-amber-400">
+                            <span 
+                                className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-amber-400"
+                                style={{ fontFamily: "Gillroy, 'Poppins', 'Bebas Neue', sans-serif" }}
+                            >
                                EAGLE<span style={{color:'#fff'}}>W</span>EB
                             </span>
                         </a>

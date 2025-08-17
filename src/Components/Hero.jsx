@@ -29,7 +29,7 @@ const Star = ({ size, left, top }) => (
     className="floating-star absolute rounded-full bg-yellow-400"
     style={{
       width: `${size}px`, height: `${size}px`, left: `${left}%`, top: `${top}%`,
-      boxShadow: `0 0 ${size * 2}px ${size * 0.5}px rgba(250, 204, 21, 0.5)`,
+      boxShadow: `0 0 ${size * 2}px ${size * 0.5}px rgba(250, 204, 21, 0.7)`,
     }}
   ></div>
 );
@@ -50,13 +50,11 @@ export default function App() {
       const elements = gsap.utils.toArray('.floating-element, .floating-star');
       const heroContent = comp.current;
 
-      // --- 1. Mouse-Following Glow & 3D Tilt Effect ---
       const handleMouseMove = (event) => {
         const { clientX, clientY } = event;
         const xPercent = clientX / window.innerWidth - 0.5;
         const yPercent = clientY / window.innerHeight - 0.5;
 
-        // Animate the cursor glow
         gsap.to(".cursor-light", {
           '--x': `${clientX}px`,
           '--y': `${clientY}px`,
@@ -64,10 +62,9 @@ export default function App() {
           ease: 'power2.out',
         });
 
-        // Animate a 3D tilt on the floating elements
         elements.forEach(el => {
           const depth = parseFloat(el.dataset.depth || 0);
-          const rotateX = yPercent * depth * -50; // Invert for natural feel
+          const rotateX = yPercent * depth * -50;
           const rotateY = xPercent * depth * 50;
           gsap.to(el, {
             rotationX: rotateX,
@@ -81,23 +78,19 @@ export default function App() {
       
       heroContent.addEventListener('mousemove', handleMouseMove);
 
-      // --- 2. Automatic Drifting Animation ---
       elements.forEach(el => {
         const isStar = el.classList.contains('floating-star');
-        el.dataset.depth = Math.random() * 0.4 + 0.1; // Depth for 3D tilt
+        el.dataset.depth = Math.random() * 0.4 + 0.1;
 
-        // This animation controls the X and Y position, running continuously
         gsap.to(el, {
-          x: `random(-200, 200)`,
-          y: `random(-200, 200)`,
-          // UPDATED: Faster duration for a quicker, more dynamic drift
-          duration: 'random(15, 25)',
+          x: `random(-250, 250)`,
+          y: `random(-250, 250)`,
+          duration: 'random(10, 20)',
           ease: 'none',
           repeat: -1,
           yoyo: true,
         });
 
-        // Star twinkling animation
         if (isStar) {
           gsap.to(el, {
             opacity: 'random(0.3, 1)', scale: 'random(0.8, 1.2)',
@@ -107,7 +100,6 @@ export default function App() {
         }
       });
 
-      // --- 3. Text & UI Reveal Animation on Load ---
       const heroText = gsap.utils.toArray('.hero-text');
       heroText.forEach(text => {
         const chars = text.textContent.split(''); text.textContent = '';
@@ -127,8 +119,7 @@ export default function App() {
         y: 40, opacity: 0, filter: 'blur(5px)',
         duration: 1, ease: 'power3.out',
       }, "-=1")
-      // UPDATED: Added buttons to the animation sequence
-      .from(".cta-button, .social-icons a", {
+      .from(".cta-button, .social-icons", {
         scale: 0.8, opacity: 0, stagger: 0.1,
         duration: 0.8, ease: "back.out(1.7)",
       }, "-=0.7");
@@ -139,21 +130,25 @@ export default function App() {
   }, []);
 
   const mathExpressions = [
-    'a²+b²=c²', 'f(x)', 'Σ', '∫(x)dx', 'E=mc²', '∇·E=ρ/ε₀', '∂Ψ/∂t', 'd/dx', '√-1', 'lim x→∞', 'π ≈ 3.14', 'Fib(n)'
+    'a²+b²=c²', 'f(x) = ax² + bx + c', 'Σ', '∫(x)dx', 'E=mc²', '∇·E=ρ/ε₀', '∂Ψ/∂t', 'd/dx', '√-1', 'lim x→∞', 'π ≈ 3.14159', 'Fib(n)', 'λf=c', 'x = (-b ± √(b²-4ac))/2a', 'e^(iπ) + 1 = 0', '∇²'
   ];
   const stars = [
-    { size: 3, left: 10, top: 20 }, { size: 2, left: 80, top: 30 },
-    { size: 4, left: 90, top: 70 }, { size: 2, left: 25, top: 85 },
-    { size: 3, left: 5, top: 60 }, { size: 2, left: 50, top: 10 },
-    { size: 3, left: 70, top: 90 }, { size: 2, left: 30, top: 40 },
-    { size: 3, left: 95, top: 5 }, { size: 2, left: 5, top: 95 },
+    { size: 3, left: 10, top: 20 }, { size: 2, left: 80, top: 30 }, { size: 4, left: 90, top: 70 },
+    { size: 2, left: 25, top: 85 }, { size: 3, left: 5, top: 60 }, { size: 2, left: 50, top: 10 },
+    { size: 3, left: 70, top: 90 }, { size: 2, left: 30, top: 40 }, { size: 3, left: 95, top: 5 },
+    { size: 2, left: 5, top: 95 }, { size: 4, left: 45, top: 50 }, { size: 2, left: 60, top: 25 },
+    { size: 3, left: 15, top: 5 }, { size: 2, left: 85, top: 55 }, { size: 3, left: 98, top: 45 },
   ];
 
   return (
-    // Main container section
     <section ref={comp} className="hero-container relative w-full h-screen bg-black text-white overflow-hidden">
       
-      {/* The yellow glow that follows the cursor */}
+      <div className="absolute top-0 left-0 w-full h-1/2 pointer-events-none z-0"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(250, 204, 21, 0.20), transparent 70%)'
+        }}
+      ></div>
+
       <div 
         className="cursor-light fixed inset-0 pointer-events-none z-30"
         style={{
@@ -162,16 +157,14 @@ export default function App() {
         }}
       ></div>
       
-      {/* Container for all floating 3D elements */}
       <div className="absolute inset-0 w-full h-full" style={{ perspective: '1200px' }}>
         {mathExpressions.map((exp, i) => (
           <div 
             key={`math-${i}`} 
-            // UPDATED: Added opacity-20 for low base visibility. The cursor glow will reveal them.
-            className="floating-element absolute text-gray-500 border border-gray-800 rounded-lg px-4 py-2 text-lg font-mono bg-black/50 backdrop-blur-sm opacity-20"
+            className="floating-element absolute text-gray-400 border border-gray-800 rounded-lg px-4 py-2 text-lg font-mono bg-black/50 backdrop-blur-sm opacity-40"
             style={{ 
               top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%`,
-              transform: 'translate(-50%, -50%)' // Center the element initially
+              transform: 'translate(-50%, -50%)'
             }}
           >
             {exp}
@@ -180,34 +173,26 @@ export default function App() {
         {stars.map((star, i) => <Star key={`star-${i}`} {...star} />)}
       </div>
 
-      {/* Centered text content and buttons */}
       <div className="relative z-10 w-full h-full flex flex-col justify-center items-center text-center p-4">
         <div>
           <h1 className="hero-text text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-gray-100">
             Engineering the Future.
           </h1>
-          <h1 className="hero-text text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-yellow-400 mt-2">
+          {/* UPDATED: Reduced top margin for tighter spacing */}
+          <h1 className="hero-text text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-yellow-400 mt-1">
             Innovative IT Solutions.
           </h1>
         </div>
-        <p className="sub-text max-w-3xl mx-auto mt-6 text-base md:text-lg text-gray-300">
+        {/* UPDATED: Reduced top margin for tighter spacing */}
+        <p className="sub-text max-w-3xl mx-auto mt-4 text-base md:text-lg text-gray-300">
           We build robust, scalable, and custom software to propel your business into the next generation of technology.
         </p>
         
-        {/* NEW: Buttons container */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4">
-          <a href="#" className="cta-button bg-yellow-400 text-black font-semibold py-3 px-8 rounded-full text-lg transform transition-transform duration-300 hover:scale-105 shadow-lg shadow-yellow-400/20">
-            Get in Touch
-          </a>
-          <a href="#" className="cta-button bg-gray-800 text-white font-semibold py-3 px-8 rounded-full text-lg border border-gray-700 transform transition-transform duration-300 hover:scale-105 hover:bg-gray-700">
-            Explore Our Works
-          </a>
-        </div>
+       
       </div>
         
-      {/* Social media icons */}
-      {/* UPDATED: Responsive layout for social icons */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 md:left-8 md:translate-x-0 z-10 flex flex-row md:flex-col gap-5">
+      <div className="social-icons absolute bottom-8 left-8 z-10 flex flex-row items-center gap-4">
+        <span className="text-gray-500 text-sm font-medium mr-2">Follow us on:</span>
         <a href="#" className="text-gray-500 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110"><TwitterIcon /></a>
         <a href="#" className="text-gray-500 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110"><LinkedinIcon /></a>
         <a href="#" className="text-gray-500 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110"><GithubIcon /></a>
